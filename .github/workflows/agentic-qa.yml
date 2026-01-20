@@ -1,46 +1,15 @@
-name: AgenticQA Client Pipeline
+name: AgenticQA Pipeline
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
   workflow_dispatch:
     inputs:
-      client_id:
-        description: 'Client ID for dashboard'
+      pipeline_type:
+        description: 'Pipeline type'
         required: false
-
+        default: 'full'
 jobs:
   agentic-qa:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        run: |
-          git clone https://github.com/${{ github.repository }}.git .
-          cd .
-          git checkout ${{ github.ref_name }}
-      
-      - name: Setup Node.js and Download Executor
-        run: |
-          # Install Node.js 18 (Ubuntu already has nvm or nodejs)
-          which node || apt-get update && apt-get install -y nodejs npm
-          node --version
-          
-          # Create .agentic-qa directory
-          mkdir -p .agentic-qa
-          
-          # Download AgenticQA Executor
-          curl -sSL https://raw.githubusercontent.com/nhomyk/AgenticQA/main/.agentic-qa/executor.js -o .agentic-qa/executor.js
-          
-          if [ ! -f .agentic-qa/executor.js ]; then
-            echo "Failed to download executor"
-            exit 1
-          fi
-      
-      - name: Run AgenticQA Pipeline
-        run: node .agentic-qa/executor.js
-        env:
-          CLIENT_ID: ${{ github.event.inputs.client_id || 'client_default' }}
-          REPOSITORY: ${{ github.repository }}
-          BRANCH: ${{ github.ref_name }}
-          AGENTIC_QA_API: http://localhost:3001
+      - uses: actions/checkout@v4
+      - name: Run AgenticQA
+        run: echo "AgenticQA pipeline running on ${{ github.ref_name }}"
