@@ -14,17 +14,28 @@ jobs:
   agentic-qa:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      
-      - name: Download AgenticQA Executor
+      - name: Checkout Repository
         run: |
+          git clone https://github.com/${{ github.repository }}.git .
+          cd .
+          git checkout ${{ github.ref_name }}
+      
+      - name: Setup Node.js and Download Executor
+        run: |
+          # Install Node.js 18 (Ubuntu already has nvm or nodejs)
+          which node || apt-get update && apt-get install -y nodejs npm
+          node --version
+          
+          # Create .agentic-qa directory
           mkdir -p .agentic-qa
+          
+          # Download AgenticQA Executor
           curl -sSL https://raw.githubusercontent.com/nhomyk/AgenticQA/main/.agentic-qa/executor.js -o .agentic-qa/executor.js
+          
+          if [ ! -f .agentic-qa/executor.js ]; then
+            echo "Failed to download executor"
+            exit 1
+          fi
       
       - name: Run AgenticQA Pipeline
         run: node .agentic-qa/executor.js
