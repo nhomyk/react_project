@@ -1,0 +1,35 @@
+name: AgenticQA Client Pipeline
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      client_id:
+        description: 'Client ID for dashboard'
+        required: false
+
+jobs:
+  agentic-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      
+      - name: Download AgenticQA Executor
+        run: |
+          mkdir -p .agentic-qa
+          curl -sSL https://raw.githubusercontent.com/nhomyk/AgenticQA/main/.agentic-qa/executor.js -o .agentic-qa/executor.js
+      
+      - name: Run AgenticQA Pipeline
+        run: node .agentic-qa/executor.js
+        env:
+          CLIENT_ID: ${{ github.event.inputs.client_id || 'client_default' }}
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          AGENTIC_QA_API: http://localhost:3001
