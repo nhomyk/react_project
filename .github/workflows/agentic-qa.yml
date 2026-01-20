@@ -46,6 +46,7 @@ jobs:
         run: |
           echo "## ✅ AgenticQA Pipeline Started" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Pipeline Name**: ${{ env.PIPELINE_NAME }}" >> $GITHUB_STEP_SUMMARY
           echo "**Repository**: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
           echo "**Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "**Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
