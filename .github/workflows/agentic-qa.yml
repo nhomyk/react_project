@@ -16,9 +16,15 @@ on:
           - full
           - tests
           - security
+      pipeline_name:
+        description: 'Custom pipeline name'
+        required: false
+        default: 'AgenticQA Pipeline'
+        type: string
 
 env:
   PIPELINE_TYPE: ${{ github.event.inputs.pipeline_type || 'full' }}
+  PIPELINE_NAME: ${{ github.event.inputs.pipeline_name || 'AgenticQA Pipeline' }}
 
 jobs:
   pipeline-check:
